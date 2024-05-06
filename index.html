@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+        <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <style>
+        #map {
+            width: 1037px;
+            height: 533px;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/L.Control.Layers.Tree.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet.wms.js"></script>
+        <script src="data/Parcellesinventoriees_4.js"></script>
+        <script src="data/cadastre88470communes_5.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[48.007106517648566,6.497066994912147],[48.182768144428856,7.009707561732099]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        function removeEmptyRowsFromPopupContent(content, feature) {
+         var tempDiv = document.createElement('div');
+         tempDiv.innerHTML = content;
+         var rows = tempDiv.querySelectorAll('tr');
+         for (var i = 0; i < rows.length; i++) {
+             var td = rows[i].querySelector('td.visible-with-data');
+             var key = td ? td.id : '';
+             if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+                 rows[i].parentNode.removeChild(rows[i]);
+             }
+         }
+         return tempDiv.innerHTML;
+        }
+        document.querySelector(".leaflet-popup-pane").addEventListener("load", function(event) {
+          var tagName = event.target.tagName,
+            popup = map._popup;
+          // Also check if flag is already set.
+          if (tagName === "IMG" && popup && !popup._updated) {
+            popup._updated = true; // Set flag to prevent looping.
+            popup.update();
+          }
+        }, true);
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_Photographiesariennes_0');
+        map.getPane('pane_Photographiesariennes_0').style.zIndex = 400;
+        var layer_Photographiesariennes_0 = L.WMS.layer("https://data.geopf.fr/annexes/ressources/wms-r/essentiels.xml", "ORTHOIMAGERY.ORTHOPHOTOS", {
+            pane: 'pane_Photographiesariennes_0',
+            format: 'image/jpeg',
+            uppercase: true,
+            transparent: true,
+            continuousWorld : true,
+            tiled: true,
+            info_format: 'text/html',
+            opacity: 1,
+            attribution: '',
+        });
+        map.addLayer(layer_Photographiesariennes_0);
+        map.createPane('pane_PlanIGNv2_1');
+        map.getPane('pane_PlanIGNv2_1').style.zIndex = 401;
+        var layer_PlanIGNv2_1 = L.WMS.layer("https://data.geopf.fr/annexes/ressources/wms-r/essentiels.xml", "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2", {
+            pane: 'pane_PlanIGNv2_1',
+            format: 'image/jpeg',
+            uppercase: true,
+            transparent: true,
+            continuousWorld : true,
+            tiled: true,
+            info_format: 'text/html',
+            opacity: 1,
+            attribution: '',
+        });
+        map.addLayer(layer_PlanIGNv2_1);
+        map.createPane('pane_OpenStreetMapfr_2');
+        map.getPane('pane_OpenStreetMapfr_2').style.zIndex = 402;
+        var layer_OpenStreetMapfr_2 = L.tileLayer('http://a.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+            pane: 'pane_OpenStreetMapfr_2',
+            opacity: 1.0,
+            attribution: '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors, under ODbL</a>',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 19
+        });
+        layer_OpenStreetMapfr_2;
+        map.addLayer(layer_OpenStreetMapfr_2);
+        map.createPane('pane_BDOrthoIGN_3');
+        map.getPane('pane_BDOrthoIGN_3').style.zIndex = 403;
+        var layer_BDOrthoIGN_3 = L.tileLayer('https://proxy-ign.openstreetmap.fr/94GjiyqD/bdortho/{z}/{x}/{y}.jpg', {
+            pane: 'pane_BDOrthoIGN_3',
+            opacity: 1.0,
+            attribution: '<a href="https://openstreetmap.fr/bdortho">BDOrtho IGN</a>',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 2,
+            maxNativeZoom: 21
+        });
+        layer_BDOrthoIGN_3;
+        map.addLayer(layer_BDOrthoIGN_3);
+        function pop_Parcellesinventoriees_4(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['section'] !== null ? autolinker.link(feature.properties['section'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['num parcel'] !== null ? autolinker.link(feature.properties['num parcel'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Surface ha'] !== null ? autolinker.link(feature.properties['Surface ha'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Gestion'] !== null ? autolinker.link(feature.properties['Gestion'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Location'] !== null ? autolinker.link(feature.properties['Location'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Groupe'] !== null ? autolinker.link(feature.properties['Groupe'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Detail'] !== null ? autolinker.link(feature.properties['Detail'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Usage'] !== null ? autolinker.link(feature.properties['Usage'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Sousgroupe'] !== null ? autolinker.link(feature.properties['Sousgroupe'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Enjeu'] !== null ? autolinker.link(feature.properties['Enjeu'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Boisé'] !== null ? autolinker.link(feature.properties['Boisé'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style_Parcellesinventoriees_4_0(feature) {
+            switch(String(feature.properties['Usage'])) {
+                case 'Captage':
+                    return {
+                pane: 'pane_Parcellesinventoriees_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(20,61,150,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Haut de Bouvacôte':
+                    return {
+                pane: 'pane_Parcellesinventoriees_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(91,238,172,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Location agricole':
+                    return {
+                pane: 'pane_Parcellesinventoriees_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(170,82,0,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Mélange Bouvacôte':
+                    return {
+                pane: 'pane_Parcellesinventoriees_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(252,135,188,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'ONF':
+                    return {
+                pane: 'pane_Parcellesinventoriees_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,127,0,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Taillis':
+                    return {
+                pane: 'pane_Parcellesinventoriees_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,1,5,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Hêtraie-érablaie':
+                    return {
+                pane: 'pane_Parcellesinventoriees_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(30,200,252,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Pessière sur tourbière':
+                    return {
+                pane: 'pane_Parcellesinventoriees_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(111,255,1,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Ripisylve':
+                    return {
+                pane: 'pane_Parcellesinventoriees_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(1,52,255,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Sapinière':
+                    return {
+                pane: 'pane_Parcellesinventoriees_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(84,156,29,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Tourbière CEN':
+                    return {
+                pane: 'pane_Parcellesinventoriees_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,233,35,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Eboulis':
+                    return {
+                pane: 'pane_Parcellesinventoriees_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(156,37,215,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Sentier du Blaireau':
+                    return {
+                pane: 'pane_Parcellesinventoriees_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,9,222,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Bords de route et parcelles isolées':
+                    return {
+                pane: 'pane_Parcellesinventoriees_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(139,139,139,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Sapinière Bonne Fontaine':
+                    return {
+                pane: 'pane_Parcellesinventoriees_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,145,17,1.0)',
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_Parcellesinventoriees_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(79,74,156,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Parcellesinventoriees_4');
+        map.getPane('pane_Parcellesinventoriees_4').style.zIndex = 404;
+        map.getPane('pane_Parcellesinventoriees_4').style['mix-blend-mode'] = 'normal';
+        var layer_Parcellesinventoriees_4 = new L.geoJson(json_Parcellesinventoriees_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Parcellesinventoriees_4',
+            layerName: 'layer_Parcellesinventoriees_4',
+            pane: 'pane_Parcellesinventoriees_4',
+            onEachFeature: pop_Parcellesinventoriees_4,
+            style: style_Parcellesinventoriees_4_0,
+        });
+        bounds_group.addLayer(layer_Parcellesinventoriees_4);
+        map.addLayer(layer_Parcellesinventoriees_4);
+        function pop_cadastre88470communes_5(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['nom'] !== null ? autolinker.link(feature.properties['nom'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['created'] !== null ? autolinker.link(feature.properties['created'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['updated'] !== null ? autolinker.link(feature.properties['updated'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style_cadastre88470communes_5_0() {
+            return {
+                pane: 'pane_cadastre88470communes_5',
+                opacity: 1,
+                color: 'rgba(227,26,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 3.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(213,180,60,0.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_cadastre88470communes_5');
+        map.getPane('pane_cadastre88470communes_5').style.zIndex = 405;
+        map.getPane('pane_cadastre88470communes_5').style['mix-blend-mode'] = 'normal';
+        var layer_cadastre88470communes_5 = new L.geoJson(json_cadastre88470communes_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_cadastre88470communes_5',
+            layerName: 'layer_cadastre88470communes_5',
+            pane: 'pane_cadastre88470communes_5',
+            onEachFeature: pop_cadastre88470communes_5,
+            style: style_cadastre88470communes_5_0,
+        });
+        bounds_group.addLayer(layer_cadastre88470communes_5);
+        map.addLayer(layer_cadastre88470communes_5);
+        var baseMaps = {};
+        var overlaysTree = [
+            {label: '<img src="legend/cadastre88470communes_5.png" /> cadastre-88470-communes', layer: layer_cadastre88470communes_5},
+            {label: 'Parcelles inventoriées<br /><table><tr><td style="text-align: center;"><img src="legend/Parcellesinventoriees_4_Captage0.png" /></td><td>Captage</td></tr><tr><td style="text-align: center;"><img src="legend/Parcellesinventoriees_4_HautdeBouvacôte1.png" /></td><td>Haut de Bouvacôte</td></tr><tr><td style="text-align: center;"><img src="legend/Parcellesinventoriees_4_Locationagricole2.png" /></td><td>Location agricole</td></tr><tr><td style="text-align: center;"><img src="legend/Parcellesinventoriees_4_MélangeBouvacôte3.png" /></td><td>Mélange Bouvacôte</td></tr><tr><td style="text-align: center;"><img src="legend/Parcellesinventoriees_4_ONF4.png" /></td><td>ONF</td></tr><tr><td style="text-align: center;"><img src="legend/Parcellesinventoriees_4_Taillis5.png" /></td><td>Taillis</td></tr><tr><td style="text-align: center;"><img src="legend/Parcellesinventoriees_4_Hêtraieérablaie6.png" /></td><td>Hêtraie-érablaie</td></tr><tr><td style="text-align: center;"><img src="legend/Parcellesinventoriees_4_Pessièresurtourbière7.png" /></td><td>Pessière sur tourbière</td></tr><tr><td style="text-align: center;"><img src="legend/Parcellesinventoriees_4_Ripisylve8.png" /></td><td>Ripisylve</td></tr><tr><td style="text-align: center;"><img src="legend/Parcellesinventoriees_4_Sapinière9.png" /></td><td>Sapinière</td></tr><tr><td style="text-align: center;"><img src="legend/Parcellesinventoriees_4_TourbièreCEN10.png" /></td><td>Tourbière CEN</td></tr><tr><td style="text-align: center;"><img src="legend/Parcellesinventoriees_4_Eboulis11.png" /></td><td>Eboulis</td></tr><tr><td style="text-align: center;"><img src="legend/Parcellesinventoriees_4_SentierduBlaireau12.png" /></td><td>Sentier du Blaireau</td></tr><tr><td style="text-align: center;"><img src="legend/Parcellesinventoriees_4_Bordsderouteetparcellesisolées13.png" /></td><td>Bords de route et parcelles isolées</td></tr><tr><td style="text-align: center;"><img src="legend/Parcellesinventoriees_4_SapinièreBonneFontaine14.png" /></td><td>Sapinière Bonne Fontaine</td></tr><tr><td style="text-align: center;"><img src="legend/Parcellesinventoriees_4_15.png" /></td><td></td></tr></table>', layer: layer_Parcellesinventoriees_4},
+            {label: "BDOrtho IGN", layer: layer_BDOrthoIGN_3},
+            {label: "OpenStreetMap.fr", layer: layer_OpenStreetMapfr_2},
+            {label: "Plan IGN v2", layer: layer_PlanIGNv2_1},
+            {label: "Photographies aériennes", layer: layer_Photographiesariennes_0},]
+        var lay = L.control.layers.tree(null, overlaysTree,{
+            //namedToggle: true,
+            //selectorBack: false,
+            //closedSymbol: '&#8862; &#x1f5c0;',
+            //openedSymbol: '&#8863; &#x1f5c1;',
+            //collapseAll: 'Collapse all',
+            //expandAll: 'Expand all',
+            collapsed: false, 
+        });
+        lay.addTo(map);
+        setBounds();
+        </script>
+    </body>
+</html>
